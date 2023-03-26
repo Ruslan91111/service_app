@@ -4,16 +4,15 @@ services:
   web-app:
     build:
       context: .
-  # 8000-ый порт в браузере соответствует 8000 порту в контейнере
-  ports:
-      -"8000:8000"
+
+    # 8000-ый порт в браузере соответствует 8000 порту в контейнере
+    ports:
+      - "8000:8000"
   # все локальные изменения заносятся в контейнер
-  volumes:
+    volumes:
       - ./service:/service
-
   # команда, чтобы запустить наш джанго сервер
-  command: >
-    sh -c "python manage.py runserver 0.0.0.0:8000"
-
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
 
 
