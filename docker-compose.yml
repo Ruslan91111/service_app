@@ -1,18 +1,42 @@
 # Перечисление сервисов, которые будут запускаться docker-compose. Сервисы - то, из чего будут создаваться 
 # докер контейнеры при помощи докер compose
 services:
+  # Название сервиса придумываем сами.
   web-app:
+    # Определяем из чего будет строиться.
     build:
+      # из Содержимого текущей директории.
       context: .
 
     # 8000-ый порт в браузере соответствует 8000 порту в контейнере
     ports:
       - "8000:8000"
-  # все локальные изменения заносятся в контейнер
+    # все локальные изменения заносятся в контейнер
     volumes:
       - ./service:/service
-  # команда, чтобы запустить наш джанго сервер
+    environment:
+      - DB_HOST=database
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=password
+
+    # команда, чтобы запустить наш джанго-сервер
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+
+    # мы не должны запускать сервис раньше, чем мы запустим сервис database
+    depends_on:
+      - database
+
+  database:
+    image: postgres:14.6-alpine
+
+    ports:
+      - "5433:5432"
+
+    environment:
+      - POSTGRES_DB=dbname
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=password
 
 
